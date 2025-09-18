@@ -1,21 +1,20 @@
 
 "use client";
+
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import CaptureModal from "../components/CaptureModal";
 import UploadModal from "../components/UploadModal";
-import PersonCard from "../components/PersonCard";
 
 export default function Home() {
   const [captureOpen, setCaptureOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [cameraFacingMode, setCameraFacingMode] = useState<"user" | "environment">("user");
   const [loading, setLoading] = useState(false);
-  const [person, setPerson] = useState<{ name: string; details: string; imageUrl: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  // API endpoints
-  // POST /api/face-detect { image: base64 or file } => { name, details, imageUrl }
-
+  // After detection, redirect to /result?id=personId
   const handleCapture = async (image: string) => {
     setCaptureOpen(false);
     setLoading(true);
@@ -28,7 +27,8 @@ export default function Home() {
       });
       if (!res.ok) throw new Error("Face not found or server error");
       const data = await res.json();
-      setPerson(data);
+      // Assume API returns { id }
+      router.push(`/result?id=${data.id}`);
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -49,7 +49,8 @@ export default function Home() {
       });
       if (!res.ok) throw new Error("Face not found or server error");
       const data = await res.json();
-      setPerson(data);
+      // Assume API returns { id }
+      router.push(`/result?id=${data.id}`);
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -87,11 +88,6 @@ export default function Home() {
       {error && (
         <div className="text-red-400 text-lg font-mono mb-6">{error}</div>
       )}
-      {person && (
-        <div className="mb-8">
-          <PersonCard name={person.name} details={person.details} imageUrl={person.imageUrl} />
-        </div>
-      )}
 
       <CaptureModal
         open={captureOpen}
@@ -110,7 +106,7 @@ export default function Home() {
         <div className="mb-2">API Endpoints:</div>
         <div className="font-mono bg-black/30 rounded p-2">
           POST <span className="text-blue-300">/api/face-detect</span> {'{"image": base64 | file }'}<br />
-          → <span className="text-blue-300">{'{"name", "details", "imageUrl"}'}</span>
+          → <span className="text-blue-300">{'{"id"}'}</span>
         </div>
       </div>
     </div>
