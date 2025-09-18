@@ -16,6 +16,8 @@ const UploadModal: React.FC<UploadModalProps> = ({ open, onClose, onUpload }) =>
       reader.onload = () => {
         if (typeof reader.result === "string") {
           onUpload(reader.result);
+          // Reset file input so the same file can be selected again
+          if (fileInputRef.current) fileInputRef.current.value = "";
         }
       };
       reader.readAsDataURL(file);
