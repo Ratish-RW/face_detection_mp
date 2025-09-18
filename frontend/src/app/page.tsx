@@ -12,21 +12,17 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleCapture = async () => {
+  const handleCapture = async (imageUrl?: string) => {
     setCaptureOpen(false);
     setLoading(true);
     try {
-      // Read the captured image URL from the file
-      const res = await fetch("/captured_image_url.txt");
-      const image = await res.text();
-      // Send the image to the backend API
+      // Send the image URL directly to the backend API
       const apiRes = await fetch("/api/face-detect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image }),
+        body: JSON.stringify({ image: imageUrl }),
       });
       if (!apiRes.ok) throw new Error("Face not found or server error");
-      // You can handle the response as needed, e.g., redirect to result page
       router.push("/result");
     } catch (e: any) {
       setError(e.message);
