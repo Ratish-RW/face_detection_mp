@@ -36,13 +36,27 @@ export default function Home() {
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async (imageUrl?: string) => {
     setUploadOpen(false);
     setLoading(true);
-    setTimeout(() => {
+    try {
+      // Send the image URL directly to the backend API (same as capture)
+      const apiRes = await fetch("/api/face-detect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: imageUrl }),
+      });
+      if (!apiRes.ok) throw new Error("Face not found or server error");
+      const result = await apiRes.json();
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("personResult", JSON.stringify(result));
+      }
       router.push("/result");
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const handleSwitchCamera = () => {

@@ -3,7 +3,7 @@ import React, { useRef } from "react";
 interface UploadModalProps {
   open: boolean;
   onClose: () => void;
-  onUpload: (file: File) => void;
+  onUpload: (imageUrl: string) => void;
 }
 
 const UploadModal: React.FC<UploadModalProps> = ({ open, onClose, onUpload }) => {
@@ -11,7 +11,14 @@ const UploadModal: React.FC<UploadModalProps> = ({ open, onClose, onUpload }) =>
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      onUpload(e.target.files[0]);
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          onUpload(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
