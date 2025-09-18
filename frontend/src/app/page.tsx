@@ -1,5 +1,13 @@
 "use client";
 import React, { useState } from "react";
+
+// Add Google Fonts Orbitron import to the head
+if (typeof window !== "undefined") {
+  const link = document.createElement("link");
+  link.href = "https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap";
+  link.rel = "stylesheet";
+  document.head.appendChild(link);
+}
 import { useRouter } from "next/navigation";
 import CaptureModal from "../components/CaptureModal";
 import UploadModal from "../components/UploadModal";
@@ -96,9 +104,20 @@ export default function Home() {
           }
         }
       `}</style>
-      <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-200 to-blue-600 mb-8 drop-shadow-lg text-center">
+      <h1
+        className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-200 to-blue-600 mb-8 drop-shadow-lg text-center orbitron-landing"
+        style={{ fontFamily: 'Orbitron, sans-serif', fontWeight: 900 }}
+      >
         Face Detection Portal
       </h1>
+      <style>{`
+        .orbitron-landing {
+          font-family: 'Orbitron', sans-serif !important;
+          font-optical-sizing: auto;
+          font-weight: 900;
+          font-style: normal;
+        }
+      `}</style>
       <div className="flex gap-6 mb-10">
         <button
           className="px-8 py-4 rounded-xl bg-gradient-to-r from-blue-700 to-blue-400 text-white text-xl font-bold shadow-lg hover:from-blue-900 hover:to-blue-600 transition border-2 border-blue-500"
