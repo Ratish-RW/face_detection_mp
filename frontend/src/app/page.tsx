@@ -29,6 +29,7 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: imageUrl }),
+        cache: "no-store",
       });
       if (!apiRes.ok) throw new Error("Face not found or server error");
       const result = await apiRes.json();
@@ -53,6 +54,7 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: imageUrl }),
+        cache: "no-store",
       });
       if (!apiRes.ok) throw new Error("Face not found or server error");
       const result = await apiRes.json();
