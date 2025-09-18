@@ -23,6 +23,11 @@ export default function Home() {
         body: JSON.stringify({ image: imageUrl }),
       });
       if (!apiRes.ok) throw new Error("Face not found or server error");
+      const result = await apiRes.json();
+      // Store result in sessionStorage for /result page
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("personResult", JSON.stringify(result));
+      }
       router.push("/result");
     } catch (e: any) {
       setError(e.message);
@@ -51,7 +56,7 @@ export default function Home() {
         alt="Mumbai Police Logo"
         className="mb-6"
         style={{
-          width: "120px",
+          width: "35vh",
           maxWidth: "60vw",
           height: "auto",
           objectFit: "contain",
@@ -115,13 +120,7 @@ export default function Home() {
         onUpload={handleUpload}
       />
 
-      <div className="mt-10 text-blue-200/70 text-xs text-center max-w-md">
-        <div className="mb-2">API Endpoints:</div>
-        <div className="font-mono bg-black/30 rounded p-2">
-          POST <span className="text-blue-300">/api/face-detect</span> {'{"image": base64 | file }'}<br />
-          → <span className="text-blue-300">{'{"id"}'}</span>
-        </div>
-      </div>
+      
     </div>
   );
 }

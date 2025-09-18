@@ -20,14 +20,14 @@ const PersonCard: React.FC<PersonCardProps> = ({ person }) => {
       {person.photo && (
         <img src={person.photo} alt={person.name || "Person photo"} className="rounded-full w-32 h-32 object-cover border-4 border-blue-400 mb-4" />
       )}
-      <h2 className="text-2xl font-bold text-white mb-2">{person.name || "Unknown"}</h2>
-      {person.nickname && <div className="text-blue-200 mb-1">Nickname: {person.nickname}</div>}
-      {person.police_station && <div className="text-blue-200 mb-1">Police Station: {person.police_station}</div>}
-      {person.arrest_datetime && <div className="text-blue-200 mb-1">Arrested: {person.arrest_datetime}</div>}
-  {person.crime && <div className="text-blue-200 mb-1">Crime: {person.crime}</div>}
-  {person.sections && <div className="text-blue-200 mb-1">Sections: {person.sections}</div>}
-  {person.score && <div className="text-blue-400 mt-2">Match Score: {person.score.toFixed(3)}</div>}
-  {person.confidence && <div className="text-blue-400 mt-2">Confidence: {person.confidence.toFixed(3)}</div>}
+      <h2 className="text-2xl font-bold text-white mb-2">{person.name || person.id || "Unknown"}</h2>
+      {Object.entries(person).map(([key, value]) => {
+        if (["photo", "name", "id"].includes(key)) return null;
+        if (typeof value === "number") {
+          return <div key={key} className="text-blue-200 mb-1">{key}: {value.toFixed(3)}</div>;
+        }
+        return <div key={key} className="text-blue-200 mb-1">{key}: {String(value)}</div>;
+      })}
     </div>
   );
 };
