@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #000 0%, #0a1a3a 50%, #0e3a7a 100%);
+  color: #e0eaff;
+  font-family: var(--font-geist-sans, 'Geist', Arial, Helvetica, sans-serif);
+  letter-spacing: 0.01em;
+  font-size: 1.05rem;
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 1rem;
+  }
+}
