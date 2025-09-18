@@ -7,10 +7,47 @@ body {
   font-family: var(--font-geist-sans, 'Geist', Arial, Helvetica, sans-serif);
   letter-spacing: 0.01em;
   font-size: 1.05rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  body {
+    font-size: 1rem;
+    padding: 0 0.5rem;
+  }
 }
 
 @media (max-width: 600px) {
   body {
-    font-size: 1rem;
+    font-size: 0.97rem;
+    padding: 0 0.2rem;
   }
+  .modal-content, .card {
+    max-width: 98vw !important;
+    padding: 1rem !important;
+  }
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, #000 0%, #0a1a3a 50%, #0e3a7a 100%);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.card {
+  width: 100%;
+  max-width: 350px;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, #000 0%, #0a1a3a 50%, #0e3a7a 100%);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }

@@ -1,6 +1,4 @@
-
 "use client";
-
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import CaptureModal from "../components/CaptureModal";
@@ -14,21 +12,22 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // After detection, redirect to /result?id=personId
-  const handleCapture = async (image: string) => {
+  const handleCapture = async () => {
     setCaptureOpen(false);
     setLoading(true);
-    setError(null);
     try {
-      const res = await fetch("/api/face-detect", {
+      // Read the captured image URL from the file
+      const res = await fetch("/captured_image_url.txt");
+      const image = await res.text();
+      // Send the image to the backend API
+      const apiRes = await fetch("/api/face-detect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image }),
       });
-      if (!res.ok) throw new Error("Face not found or server error");
-      const data = await res.json();
-      // Assume API returns { id }
-      router.push(`/result?id=${data.id}`);
+      if (!apiRes.ok) throw new Error("Face not found or server error");
+      // You can handle the response as needed, e.g., redirect to result page
+      router.push("/result");
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -36,26 +35,13 @@ export default function Home() {
     }
   };
 
-  const handleUpload = async (file: File) => {
+  const handleUpload = () => {
     setUploadOpen(false);
     setLoading(true);
-    setError(null);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/face-detect", {
-        method: "POST",
-        body: formData,
-      });
-      if (!res.ok) throw new Error("Face not found or server error");
-      const data = await res.json();
-      // Assume API returns { id }
-      router.push(`/result?id=${data.id}`);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
+    setTimeout(() => {
+      router.push("/result");
       setLoading(false);
-    }
+    }, 1000);
   };
 
   const handleSwitchCamera = () => {
@@ -64,6 +50,37 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full px-4 py-12">
+      <img
+        src="/assets/images/logo_mw.png"
+        alt="Mumbai Police Logo"
+        className="mb-6"
+        style={{
+          width: "120px",
+          maxWidth: "60vw",
+          height: "auto",
+          objectFit: "contain",
+          filter: "drop-shadow(0 2px 8px #0008)",
+        }}
+        sizes="(max-width: 600px) 60vw, (max-width: 900px) 100px, 120px"
+      />
+      <style>{`
+        @media (max-width: 600px) {
+          img[alt='Mumbai Police Logo'] {
+            width: 40vw !important;
+            max-width: 180px !important;
+          }
+        }
+        @media (min-width: 601px) and (max-width: 900px) {
+          img[alt='Mumbai Police Logo'] {
+            width: 100px !important;
+          }
+        }
+        @media (min-width: 901px) {
+          img[alt='Mumbai Police Logo'] {
+            width: 120px !important;
+          }
+        }
+      `}</style>
       <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-200 to-blue-600 mb-8 drop-shadow-lg text-center">
         Face Detection Portal
       </h1>
