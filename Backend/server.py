@@ -106,6 +106,17 @@ def search_face(img, threshold=0.45):
         return {**stored_labels[best_idx], "score": float(best_score)}
     else:
         return {'id':'NEW','confidence':float(best_score)}
+    
+def clean_json(data):
+    clean = {}
+    for k, v in data.items():
+        if isinstance(v, float) and (np.isnan(v) or np.isinf(v)):
+            clean[k] = None 
+        elif isinstance(v, (np.integer, np.floating)):
+            clean[k] = v.item()  
+        else:
+            clean[k] = v
+    return clean
 
 
 @app.route('/hello',methods=['GET'])
@@ -131,6 +142,7 @@ def get_image():
         preprocessed_img = preprocess_image(remove_bg_img)
 
         result = search_face(preprocessed_img)
+        result = clean_json(result)
         return jsonify({"status": "success","result": result}), 200
     except Exception as e:
         return jsonify({'status':'failure',"error":str(e)}), 401
