@@ -24,7 +24,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gradient-to-br from-black via-blue-900 to-blue-700 text-white relative overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-black via-blue-900 to-blue-700 text-white relative overflow-hidden`}
         style={{
           backgroundImage:
             "linear-gradient(135deg, #000 0%, #0a1a3a 50%, #0e3a7a 100%)",
@@ -69,7 +69,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "flex-start",
-            minHeight: "100vh",
             width: "100%",
             textAlign: "center"
           }}

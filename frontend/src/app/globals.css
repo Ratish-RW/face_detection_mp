@@ -1,3 +1,25 @@
+html {
+  background: linear-gradient(135deg, #000 0%, #0a1a3a 50%, #0e3a7a 100%) !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: cover !important;
+  min-height: 100%;
+  width: 100%;
+}
+
+body {
+  background: transparent !important;
+}
+html, body, #__next, main {
+  height: 100%;
+  min-height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  overflow-y: auto !important;
+}
 @import "tailwindcss";
 
 body {

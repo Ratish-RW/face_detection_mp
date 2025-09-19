@@ -1,4 +1,4 @@
-"use client"; // needed if you're in Next.js App Router
+"use client";
 
 import React, { useRef, useState, useEffect } from "react";
 
@@ -24,7 +24,7 @@ const CaptureModal: React.FC<CaptureModalProps> = ({
 
   useEffect(() => {
     if (!open) {
-      // stop camera when modal is closed
+      // Stop camera when modal closes
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
         setStream(null);
@@ -32,19 +32,27 @@ const CaptureModal: React.FC<CaptureModalProps> = ({
       return;
     }
 
-    // ✅ Only run in browser + secure context
+    // ✅ Only run in secure context + browser
     if (
       typeof navigator !== "undefined" &&
       navigator.mediaDevices &&
       navigator.mediaDevices.getUserMedia
     ) {
-      const constraints: MediaStreamConstraints = {
-        video: {
-          facingMode: cameraFacingMode,
-          width: { ideal: 320 },
-          height: { ideal: 320 },
-        },
+      let constraints: MediaStreamConstraints = {
+        video: true, // default fallback
       };
+
+      try {
+        constraints = {
+          video: {
+            facingMode: { ideal: cameraFacingMode }, // prefer front/back
+            width: { ideal: 320 },
+            height: { ideal: 320 },
+          },
+        };
+      } catch {
+        constraints = { video: true }; // fallback if above fails
+      }
 
       navigator.mediaDevices
         .getUserMedia(constraints)
