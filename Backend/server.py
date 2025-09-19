@@ -25,8 +25,6 @@ db = client["face_db"]
 collection = db["faces"]
 print("Connected to MongoDB successfully")
 
-
-
 def load_embeddings_from_db():
     global stored_embeddings, stored_labels
     stored_embeddings = []
@@ -92,8 +90,7 @@ def remove_background(img):
         return output
     else:
         return None
-
-
+    
 
 def preprocess_image(img,target_brightness=140,target_contrast=55):
     ycrcb = cv2.cvtColor(img,cv2.COLOR_BGR2YCrCb)
@@ -120,7 +117,7 @@ def preprocess_image(img,target_brightness=140,target_contrast=55):
     cv2.imwrite("Uploads/preprocessed_img.png",final_img)
     return final_img
 
-def search_face(img, threshold=0.45, top_k=5):
+def search_face(img, threshold=0.2, top_k=5):
     faces = face_app.get(img)
 
     if len(faces) == 0:
@@ -142,9 +139,6 @@ def search_face(img, threshold=0.45, top_k=5):
         score = sims[idx]
         if score > threshold:
             results.append({**stored_labels[idx], "score": float(score)})
-        else:
-            results.append({'id': 'NEW', 'score': float(score)})
-
     return results
     
 def clean_json(data):
@@ -191,6 +185,70 @@ def get_image():
         return jsonify({"status": "success","result": result}), 200
     except Exception as e:
         return jsonify({'status':'failure',"error":str(e)}), 401
+    
+@app.route('/add-data',methods=['POST'])
+def insert_data():
+    try:
+        data = request.get_json()
+        name = data.get('name')
+        nickname = data.get('nickname')
+        age = data.get('age')
+        police_station = data.get('police_station')
+        crime_and_section = data.get('crime_and_section')
+        head_of_crime = data.get('head_of_crime')
+        arrested_date_time = data.get('arrested_date_time')
+        img_url = data.get('img_url')
+
+        print(name,nickname,age,police_station,crime_and_section,head_of_crime,arrested_date_time)
+
+        if "image" not in img_url:
+            return jsonify({'status':'failure',"error": "No image provided"}), 400
+        
+        img_data = re.sub("^data:image/.+;base64,", "", img_url)
+        img_bytes = base64.b64decode(img_data)
+
+        img_path = "Uploads/img.png"
+        with open(img_path,"wb") as f:
+            f.write(img_bytes)
+
+        resized_img = resized_image(img_path)
+        remove_bg_img = remove_background(resized_img)
+        preprocessed_img = preprocess_image(remove_bg_img)
+
+        faces = face_app.get(preprocessed_img)
+
+        if len(faces) > 0:
+            face_embedding = faces[0].embedding
+            face_embedding = face_embedding / np.linalg.norm(face_embedding)
+
+            person_info = {
+                "Name": name,
+                "Nickname": nickname,
+                "Age": age,
+                "Police Station": police_station,
+                "Crime and section": crime_and_section,
+                "Head of Crime": head_of_crime,
+                "Arrested Date/Time": arrested_date_time,
+                "img_url": img_url
+            }
+
+            doc = {
+                "info": person_info if isinstance(person_info,dict) else {"label": str(person_info)},
+                "embedding": face_embedding.tolist()
+            }
+
+            result = collection.insert_one(doc)
+            #print(f"Inserted with _id={result.inserted_id}")
+            load_embeddings_from_db()
+            print("Refreshed embeddings successfully")
+            return jsonify({'status':'success','message':'Face added successfully'}), 200
+        
+        else:
+            return jsonify({'status':'failure', 'error':'No face found'}), 401
+        
+
+    except Exception as e:
+        return jsonify({'status':'failure','error':str(e)}), 401
 
 if __name__ == "__main__":
     app.run(debug=True,port=5000,host='0.0.0.0')
