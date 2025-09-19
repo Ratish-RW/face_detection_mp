@@ -7,6 +7,7 @@ import numpy as np
 import cv2
 import re
 import base64
+import certifi
 from pymongo import MongoClient
 from urllib.parse import quote_plus
 
@@ -15,7 +16,9 @@ password = quote_plus("Ratish@04")
 cluster_url = "criminals-data.7fju4qm.mongodb.net"
 
 client = MongoClient(
-    f"mongodb+srv://{username}:{password}@{cluster_url}/?retryWrites=true&w=majority&appName=Criminals-data"
+    f"mongodb+srv://{username}:{password}@{cluster_url}/?retryWrites=true&w=majority&appName=Criminals-data",
+    tls=True,
+    tlsCAFile=certifi.where()
 )
 
 db = client["face_db"]
