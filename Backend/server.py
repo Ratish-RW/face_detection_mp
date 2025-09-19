@@ -140,7 +140,7 @@ def search_face(img, threshold=0.45, top_k=5):
         if score > threshold:
             results.append({**stored_labels[idx], "score": float(score)})
         else:
-            results.append({'id': 'NEW', 'confidence': float(score)})
+            results.append({'id': 'NEW', 'score': float(score)})
 
     return results
     
