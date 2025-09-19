@@ -7,6 +7,40 @@ import numpy as np
 import cv2
 import re
 import base64
+from pymongo import MongoClient
+from urllib.parse import quote_plus
+
+username = "rathuratish007_db_user"
+password = quote_plus("Ratish@04")
+cluster_url = "criminals-data.7fju4qm.mongodb.net"
+
+client = MongoClient(
+    f"mongodb+srv://{username}:{password}@{cluster_url}/?retryWrites=true&w=majority&appName=Criminals-data"
+)
+
+db = client["face_db"]
+collection = db["faces"]
+print("Connected to MongoDB successfully")
+
+
+
+def load_embeddings_from_db():
+    global stored_embeddings, stored_labels
+    stored_embeddings = []
+    stored_labels = []
+
+    for document in collection.find({}):
+        stored_embeddings.append(np.array(document['embedding']))
+        stored_labels.append(document['info'])
+
+    if stored_embeddings:
+        stored_embeddings = np.stack(stored_embeddings)
+    else:
+        stored_embeddings = np.zeros((0,512))
+    stored_labels = np.array(stored_labels)
+
+load_embeddings_from_db()
+print("Loaded Embeddings successfully")
 
 app = Flask(__name__)
 CORS(app)
@@ -15,10 +49,6 @@ model = YOLOE("Yoloe/yoloe-11l-seg.onnx")
 
 face_app = FaceAnalysis(name="buffalo_l")
 face_app.prepare(ctx_id=-1,det_size=(640,640))
-
-data = np.load("Embeddings/good_embeddings_test.npz",allow_pickle=True)
-stored_embeddings = data["embeddings"]
-stored_labels = data["labels"]
 
 
 def resized_image(img_path,target_size=320):
@@ -87,25 +117,32 @@ def preprocess_image(img,target_brightness=140,target_contrast=55):
     cv2.imwrite("Uploads/preprocessed_img.png",final_img)
     return final_img
 
-def search_face(img, threshold=0.45):
-    #img = cv2.imread(query_img_path)
+def search_face(img, threshold=0.45, top_k=5):
     faces = face_app.get(img)
 
     if len(faces) == 0:
-        return None, 0.0
+        return []
 
+    # Get and normalize query embedding
     query_emb = faces[0].embedding
-    query_emb = query_emb / np.linalg.norm(query_emb)   
+    query_emb = query_emb / np.linalg.norm(query_emb)
     query_emb = query_emb.reshape(1, -1)
 
+    # Compute cosine similarity with stored embeddings
     sims = cosine_similarity(query_emb, stored_embeddings)[0]
-    best_idx = np.argmax(sims)
-    best_score = sims[best_idx]
 
-    if best_score > threshold:
-        return {**stored_labels[best_idx], "score": float(best_score)}
-    else:
-        return {'id':'NEW','confidence':float(best_score)}
+    # Get top_k indices sorted by similarity (descending)
+    top_indices = np.argsort(sims)[::-1][:top_k]
+
+    results = []
+    for idx in top_indices:
+        score = sims[idx]
+        if score > threshold:
+            results.append({**stored_labels[idx], "score": float(score)})
+        else:
+            results.append({'id': 'NEW', 'confidence': float(score)})
+
+    return results
     
 def clean_json(data):
     clean = {}
@@ -117,6 +154,10 @@ def clean_json(data):
         else:
             clean[k] = v
     return clean
+
+def clean_json_list(data_list):
+    cleaned_list = [clean_json(item) for item in data_list]
+    return cleaned_list
 
 
 @app.route('/hello',methods=['GET'])
@@ -143,7 +184,7 @@ def get_image():
         preprocessed_img = preprocess_image(remove_bg_img)
 
         result = search_face(preprocessed_img)
-        result = clean_json(result)
+        result = clean_json_list(result)
         return jsonify({"status": "success","result": result}), 200
     except Exception as e:
         return jsonify({'status':'failure',"error":str(e)}), 401
