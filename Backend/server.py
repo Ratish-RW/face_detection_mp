@@ -134,9 +134,10 @@ def get_image():
         img_bytes = base64.b64decode(img_data)
 
         img_path = "Uploads/img.png"
+
         with open(img_path,"wb") as f:
             f.write(img_bytes)
-
+            
         resized_img = resized_image(img_path)
         remove_bg_img = remove_background(resized_img)
         preprocessed_img = preprocess_image(remove_bg_img)
