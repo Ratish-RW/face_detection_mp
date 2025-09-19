@@ -8,15 +8,21 @@ import cv2
 import re
 import base64
 import certifi
+import os
 from pymongo import MongoClient
 from urllib.parse import quote_plus
+from dotenv import load_dotenv
 
-username = "rathuratish007_db_user"
-password = quote_plus("Ratish@04")
-cluster_url = "criminals-data.7fju4qm.mongodb.net"
+load_dotenv()
+
+username = os.getenv("MONGO_USERNAME")
+password = quote_plus(os.getenv("MONGO_PASSWORD"))  
+cluster_url = os.getenv("MONGO_CLUSTER_URL")
+app_name = os.getenv("MONGO_APP_NAME")
+
 
 client = MongoClient(
-    f"mongodb+srv://{username}:{password}@{cluster_url}/?retryWrites=true&w=majority&appName=Criminals-data",
+    f"mongodb+srv://{username}:{password}@{cluster_url}/?retryWrites=true&w=majority&appName={app_name}",
     tls=True,
     tlsCAFile=certifi.where()
 )
