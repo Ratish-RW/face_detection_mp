@@ -82,7 +82,6 @@ def remove_background(img):
     output = black_bg.copy()
 
     if results is not None and results.masks is not None:
-
         for mask, box in zip(results.masks.data, results.boxes):
             cls = int(box.cls[0].item())  # class id
             if cls == 0:  # class 0 = person
@@ -93,9 +92,8 @@ def remove_background(img):
                 person_only = cv2.bitwise_and(img, mask_3c)
                 bg_only = cv2.bitwise_and(black_bg, 255 - mask_3c)
                 output = cv2.add(person_only, bg_only)
-        return output
-    else:
-        return None
+    return output
+    
     
 
 def preprocess_image(img,target_brightness=140,target_contrast=55):
