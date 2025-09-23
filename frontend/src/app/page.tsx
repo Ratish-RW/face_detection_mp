@@ -33,9 +33,17 @@ export default function Home() {
       });
       if (!apiRes.ok) throw new Error("Face not found or server error");
       const result = await apiRes.json();
-      // Store result in sessionStorage for /result page
+      // Store results array (or single result) in sessionStorage for /result page
       if (typeof window !== "undefined") {
-        sessionStorage.setItem("personResult", JSON.stringify(result));
+        // If backend returned { results: [...] }
+        if (result.results && Array.isArray(result.results)) {
+          sessionStorage.setItem("personResults", JSON.stringify(result.results));
+        } else if (result.result) {
+          sessionStorage.setItem("personResults", JSON.stringify([result.result]));
+        } else {
+          // fallback: store as array
+          sessionStorage.setItem("personResults", JSON.stringify([result]));
+        }
       }
       router.push("/result");
     } catch (e: any) {
@@ -59,7 +67,13 @@ export default function Home() {
       if (!apiRes.ok) throw new Error("Face not found or server error");
       const result = await apiRes.json();
       if (typeof window !== "undefined") {
-        sessionStorage.setItem("personResult", JSON.stringify(result));
+        if (result.results && Array.isArray(result.results)) {
+          sessionStorage.setItem("personResults", JSON.stringify(result.results));
+        } else if (result.result) {
+          sessionStorage.setItem("personResults", JSON.stringify([result.result]));
+        } else {
+          sessionStorage.setItem("personResults", JSON.stringify([result]));
+        }
       }
       router.push("/result");
     } catch (e: any) {

@@ -53,20 +53,32 @@ const MOCK_PEOPLE = [
 ];
 
 export default function ResultPage() {
-  const [person, setPerson] = useState<any>(null);
+  const [people, setPeople] = useState<any[]>([]);
   const [selectedIdx, setSelectedIdx] = useState<number|null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    // Get result from sessionStorage
+    // Get results array from sessionStorage (set by upload/capture handlers)
     if (typeof window !== "undefined") {
-      const data = sessionStorage.getItem("personResult");
-      if (data) {
-        setPerson(JSON.parse(data));
+      const raw = sessionStorage.getItem("personResults");
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setPeople(parsed.slice(0, 5)); // show up to 5 logs
+          } else {
+            setError("No person details found.");
+            setPeople(MOCK_PEOPLE);
+          }
+        } catch (e) {
+          setError("Failed to parse results");
+          setPeople(MOCK_PEOPLE);
+        }
       } else {
-        setError("No person details found.");
+        // fallback to mocked data for UI
+        setPeople(MOCK_PEOPLE);
       }
       setLoading(false);
     }
@@ -81,17 +93,18 @@ export default function ResultPage() {
       </h1>
       {loading && <div className="text-blue-200 text-lg font-mono animate-pulse mb-6">Loading...</div>}
       {error && <div className="text-red-400 text-lg font-mono mb-6">{error}</div>}
-  {/* Horizontal scrollable list of 5 logs */}
+  {/* Horizontal scrollable list of up to 5 logs */}
   <div className="flex gap-6 mb-10 w-full max-w-4xl overflow-x-auto py-4 px-2 hide-scrollbar">
-        {MOCK_PEOPLE.map((p, idx) => (
+        {(people.length ? people : MOCK_PEOPLE).map((p, idx) => (
           <div
             key={idx}
             className={`flex flex-col items-center cursor-pointer bg-white/10 rounded-xl p-4 min-w-[180px] shadow-lg border border-blue-400/20 hover:bg-blue-400/10 transition-all duration-200 ${selectedIdx === idx ? 'ring-4 ring-blue-400/40' : ''}`}
             onClick={() => setSelectedIdx(idx)}
           >
-            <img src={p.photo} alt={p.name} className="rounded-full w-20 h-20 object-cover border-4 border-blue-400 mb-2" />
-            <div className="text-lg font-bold text-white mb-1">{p.name}</div>
-            <div className="text-blue-200 text-sm">{p.police_station}</div>
+            <img src={p.photo} alt={p.name || p.id || "Person"} className="rounded-full w-20 h-20 object-cover border-4 border-blue-400 mb-2" />
+            <div className="text-lg font-bold text-white mb-1">{p.name || p.id || "Unknown"}</div>
+            <div className="text-blue-200 text-sm">{p.police_station || p.station || ""}</div>
+            <div className="text-blue-200 text-xs mt-1">{p.id ? `ID: ${p.id}` : ''} {p.age ? ` • Age: ${p.age}` : ''}</div>
           </div>
         ))}
       </div>
@@ -100,7 +113,7 @@ export default function ResultPage() {
         <div className="fixed inset-0 flex items-center justify-center z-30 pointer-events-none">
           <div className="pointer-events-auto w-full max-w-xl mx-auto">
             <div className="relative flex flex-col items-center">
-              <PersonCard person={MOCK_PEOPLE[selectedIdx]}>
+              <PersonCard person={(people.length ? people : MOCK_PEOPLE)[selectedIdx]}>
                 <button
                   className="px-8 py-3 rounded-2xl border border-blue-200/40 bg-white/10 backdrop-blur-md text-white text-lg font-extrabold shadow-xl hover:bg-white/20 hover:border-blue-400 transition-all duration-200"
                   onClick={() => setSelectedIdx(null)}

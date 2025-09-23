@@ -43,12 +43,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error }, { status: flaskRes.status });
   }
   const flaskData = await flaskRes.json();
-  // Expecting flaskData.result to have { id, ... }
+  // flaskData.result may be a single object or an array of objects
   if (flaskData.status !== "success" || !flaskData.result) {
     return NextResponse.json({ error: flaskData.error || "Face not found" }, { status: 404 });
   }
-  // For compatibility, return { id } (add more fields if needed)
-  return NextResponse.json({ id: flaskData.result.id, ...flaskData.result });
+
+  // If result is an array, return under `results` key so frontend can iterate
+  if (Array.isArray(flaskData.result)) {
+    return NextResponse.json({ results: flaskData.result });
+  }
+
+  // If single object, return it as `result` for backward compatibility
+  return NextResponse.json({ result: flaskData.result });
 }
 
 // Optionally, you can proxy GET requests to Flask as well if needed
