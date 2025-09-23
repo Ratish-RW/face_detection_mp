@@ -9,7 +9,7 @@ export default function AddPersonPage() {
     setTimeout(() => router.push("/"), 1000);
   };
   return (
-  <div className="flex flex-col items-center justify-start min-h-screen w-full px-4 py-12 overflow-y-auto">
+  <div className="flex flex-col items-center justify-start min-h-screen w-full px-4 py-12 overflow-y-auto hide-scrollbar" style={{height: '100vh'}}>
       <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-200 to-blue-600 mb-8 drop-shadow-lg text-center">
         Add New Person
       </h1>

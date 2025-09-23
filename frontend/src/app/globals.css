@@ -1,24 +1,21 @@
-html {
-  background: linear-gradient(135deg, #000 0%, #0a1a3a 50%, #0e3a7a 100%) !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  background-size: cover !important;
-  min-height: 100%;
-  width: 100%;
-}
-
 body {
-  background: transparent !important;
+  min-height: 100vh;
+  background: radial-gradient(
+    60vw 60vw at 50% 50%,
+    rgba(80,180,255,0.38) 0%,
+    rgba(40,100,200,0.22) 30%,
+    rgba(10,30,60,0.96) 70%,
+    #050d1a 100%
+  );
+  box-shadow: 0 0 240px 120px rgba(80,180,255,0.18) inset;
 }
-html, body, #__next, main {
-  height: 100%;
-  min-height: 100%;
-  width: 100%;
-  box-sizing: border-box;
+/* Hide scrollbar utility */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-
-body {
-  overflow-y: auto !important;
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 @import "tailwindcss";
 
@@ -61,7 +58,7 @@ img, video {
   max-width: 400px;
   padding: 2rem;
   border-radius: 1.25rem;
-  background: linear-gradient(135deg, #000 0%, #0a1a3a 50%, #0e3a7a 100%);
+  background: none;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
@@ -70,6 +67,6 @@ img, video {
   max-width: 350px;
   padding: 1.5rem;
   border-radius: 1.25rem;
-  background: linear-gradient(135deg, #000 0%, #0a1a3a 50%, #0e3a7a 100%);
+  background: none;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }

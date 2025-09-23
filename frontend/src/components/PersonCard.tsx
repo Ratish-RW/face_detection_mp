@@ -12,11 +12,12 @@ interface PersonCardProps {
     sections?: string;
     [key: string]: any;
   };
+  children?: React.ReactNode;
 }
 
-const PersonCard: React.FC<PersonCardProps> = ({ person }) => {
+const PersonCard: React.FC<PersonCardProps> = ({ person, children }) => {
   return (
-    <div className="card flex flex-col items-center">
+    <div className="card flex flex-col items-center rounded-xl p-6 shadow-xl border border-blue-400/30" style={{background: 'rgba(30,40,80,0.45)', backdropFilter: 'blur(16px)'}}>
       {person.photo && (
         <img src={person.photo} alt={person.name || "Person photo"} className="rounded-full w-32 h-32 object-cover border-4 border-blue-400 mb-4" />
       )}
@@ -28,6 +29,7 @@ const PersonCard: React.FC<PersonCardProps> = ({ person }) => {
         }
         return <div key={key} className="text-blue-200 mb-1">{key}: {String(value)}</div>;
       })}
+      {children && <div className="mt-6 w-full flex justify-center">{children}</div>}
     </div>
   );
 };

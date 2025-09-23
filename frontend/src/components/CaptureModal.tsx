@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
+import { FaSyncAlt, FaCamera, FaTimes } from "react-icons/fa";
 
 interface CaptureModalProps {
   open: boolean;
@@ -97,8 +98,8 @@ const CaptureModal: React.FC<CaptureModalProps> = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-      <div className="bg-gradient-to-br from-black via-blue-900 to-blue-700 rounded-xl p-6 shadow-2xl w-full max-w-xs flex flex-col items-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{background: 'rgba(20,30,60,0.35)', backdropFilter: 'blur(8px)'}}>
+      <div className="rounded-xl p-6 shadow-2xl w-full max-w-xs flex flex-col items-center border border-blue-400/30" style={{background: 'rgba(30,40,80,0.45)', backdropFilter: 'blur(16px)'}}>
         {error ? (
           <div className="text-red-400 text-center mb-4">{error}</div>
         ) : (
@@ -113,31 +114,35 @@ const CaptureModal: React.FC<CaptureModalProps> = ({
               width: 320,
               height: 320,
               objectFit: "cover",
-              background: "#222",
+              background: "none",
             }}
           />
         )}
-        <div className="flex gap-2 w-full justify-between">
+        <div className="flex w-full gap-6 justify-center items-center mt-4">
           <button
             onClick={onSwitchCamera}
-            className="px-3 py-1 rounded bg-blue-600 text-white font-bold hover:bg-blue-800 transition"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-700/80 text-white hover:bg-gray-900/90 transition text-xl"
             disabled={!!error}
+            style={!!error ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+            title="Switch Camera"
           >
-            Switch Camera
+            <FaSyncAlt />
           </button>
           <button
             onClick={handleCapture}
-            className="px-3 py-1 rounded bg-gradient-to-r from-blue-500 to-blue-800 text-white font-bold hover:from-blue-700 hover:to-blue-900 transition"
+            className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-600/90 text-white hover:bg-blue-800/90 transition text-2xl border-4 border-blue-300 shadow-lg"
             disabled={!videoReady || !!error}
             style={!videoReady || error ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+            title="Capture"
           >
-            Capture
+            <FaCamera />
           </button>
           <button
             onClick={onClose}
-            className="px-3 py-1 rounded bg-gray-700 text-white font-bold hover:bg-gray-900 transition"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-700/80 text-white hover:bg-gray-900/90 transition text-xl"
+            title="Close"
           >
-            Close
+            <FaTimes />
           </button>
         </div>
       </div>

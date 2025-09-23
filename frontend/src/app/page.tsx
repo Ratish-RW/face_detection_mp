@@ -40,16 +40,16 @@ export default function Home() {
       router.push("/result");
     } catch (e: any) {
       setError(e.message);
-    } finally {
-      setLoading(false);
     }
+  };
+  const handleSwitchCamera = () => {
+    setCameraFacingMode((prev) => (prev === "user" ? "environment" : "user"));
   };
 
   const handleUpload = async (imageUrl?: string) => {
     setUploadOpen(false);
     setLoading(true);
     try {
-      // Send the image URL directly to the backend API (same as capture)
       const apiRes = await fetch("/api/face-detect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -69,40 +69,40 @@ export default function Home() {
     }
   };
 
-  const handleSwitchCamera = () => {
-    setCameraFacingMode((prev) => (prev === "user" ? "environment" : "user"));
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen w-full px-4 py-12">
+    <div
+      className="flex flex-col items-center justify-center min-h-screen w-full px-4 py-12"
+    >
       <img
         src="/assets/images/logo_mw.png"
         alt="Mumbai Police Logo"
-        className="mb-6"
+        className="mb-8"
         style={{
-          width: "35vh",
-          maxWidth: "60vw",
+          width: "16vw",
+          minWidth: "120px",
+          maxWidth: "200px",
           height: "auto",
           objectFit: "contain",
-          filter: "drop-shadow(0 2px 8px #0008)",
+          filter: "drop-shadow(0 4px 16px #000a)",
         }}
-        sizes="(max-width: 600px) 60vw, (max-width: 900px) 100px, 120px"
+        sizes="(max-width: 600px) 80vw, (max-width: 900px) 220px, 320px"
       />
       <style>{`
         @media (max-width: 600px) {
           img[alt='Mumbai Police Logo'] {
-            width: 40vw !important;
-            max-width: 180px !important;
+            width: 60vw !important;
+            min-width: 120px !important;
+            max-width: 220px !important;
           }
         }
         @media (min-width: 601px) and (max-width: 900px) {
           img[alt='Mumbai Police Logo'] {
-            width: 100px !important;
+            width: 220px !important;
           }
         }
         @media (min-width: 901px) {
           img[alt='Mumbai Police Logo'] {
-            width: 120px !important;
+            width: 320px !important;
           }
         }
       `}</style>
@@ -120,15 +120,17 @@ export default function Home() {
           font-style: normal;
         }
       `}</style>
-      <div className="flex gap-6 mb-10">
+      <div className="flex gap-8 mb-10">
         <button
-          className="px-8 py-4 rounded-xl bg-gradient-to-r from-blue-700 to-blue-400 text-white text-xl font-bold shadow-lg hover:from-blue-900 hover:to-blue-600 transition border-2 border-blue-500"
+          className="px-8 py-3 rounded-2xl border border-blue-200/40 bg-white/10 backdrop-blur-md text-white text-lg font-extrabold shadow-xl hover:bg-white/20 hover:border-blue-400 transition-all duration-200 glass-btn"
+          style={{boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)', border: '1.5px solid rgba(255,255,255,0.18)'}}
           onClick={() => setCaptureOpen(true)}
         >
           Capture
         </button>
         <button
-          className="px-8 py-4 rounded-xl bg-gradient-to-r from-blue-400 to-blue-700 text-white text-xl font-bold shadow-lg hover:from-blue-600 hover:to-blue-900 transition border-2 border-blue-500"
+          className="px-8 py-3 rounded-2xl border border-blue-200/40 bg-white/10 backdrop-blur-md text-white text-lg font-extrabold shadow-xl hover:bg-white/20 hover:border-blue-400 transition-all duration-200 glass-btn"
+          style={{boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)', border: '1.5px solid rgba(255,255,255,0.18)'}}
           onClick={() => setUploadOpen(true)}
         >
           Upload

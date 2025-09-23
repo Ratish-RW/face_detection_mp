@@ -24,14 +24,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-black via-blue-900 to-blue-700 text-white relative overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased text-white relative`}
         style={{
-          backgroundImage:
-            "linear-gradient(135deg, #000 0%, #0a1a3a 50%, #0e3a7a 100%)",
+          background: "linear-gradient(135deg, #000 0%, #0a1a3a 50%, #0e3a7a 100%)",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "cover",
-          backgroundAttachment: "scroll",
+          backgroundAttachment: "fixed",
+          minHeight: "100vh",
+          width: "100%",
+          overflow: "hidden",
         }}
       >
         {/* Background image */}
@@ -62,6 +64,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </div>
 
         <div
+          className="hide-scrollbar"
           style={{
             position: "relative",
             zIndex: 1,
@@ -70,7 +73,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             alignItems: "center",
             justifyContent: "flex-start",
             width: "100%",
-            textAlign: "center"
+            textAlign: "center",
+            height: "100vh",
+            overflowY: "auto"
           }}
         >
           {children}
