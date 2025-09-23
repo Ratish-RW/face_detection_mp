@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { FaSpinner } from "react-icons/fa6";
 
 // Add Google Fonts Orbitron import to the head
 if (typeof window !== "undefined") {
@@ -87,6 +88,7 @@ export default function Home() {
     <div
       className="flex flex-col items-center justify-center min-h-screen w-full px-4 py-12"
     >
+      
       <img
         src="/assets/images/logo_mw.png"
         alt="Mumbai Police Logo"
@@ -101,6 +103,7 @@ export default function Home() {
         }}
         sizes="(max-width: 600px) 80vw, (max-width: 900px) 220px, 320px"
       />
+      
       <style>{`
         @media (max-width: 600px) {
           img[alt='Mumbai Police Logo'] {
@@ -120,6 +123,8 @@ export default function Home() {
           }
         }
       `}</style>
+
+     
       <h1
         className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-200 to-blue-600 mb-8 drop-shadow-lg text-center orbitron-landing"
         style={{ fontFamily: 'Orbitron, sans-serif', fontWeight: 900 }}
@@ -134,6 +139,7 @@ export default function Home() {
           font-style: normal;
         }
       `}</style>
+
       <div className="flex gap-8 mb-10">
         <button
           className="px-8 py-3 rounded-2xl border border-blue-200/40 bg-white/10 backdrop-blur-md text-white text-lg font-extrabold shadow-xl hover:bg-white/20 hover:border-blue-400 transition-all duration-200 glass-btn"
@@ -151,9 +157,13 @@ export default function Home() {
         </button>
       </div>
 
+
       {loading && (
-        <div className="text-blue-200 text-lg font-mono animate-pulse mb-6">Processing...</div>
-      )}
+          <div className="fixed inset-0 flex flex-col items-center justify-center bg-black/40 z-50">
+            <FaSpinner className="animate-spin text-4xl text-blue-400" />
+            {/* <p className="mt-4 text-blue-200 font-semibold text-lg">Processing...</p> */}
+          </div>
+        )}
       {error && (
         <div className="text-red-400 text-lg font-mono mb-6">{error}</div>
       )}

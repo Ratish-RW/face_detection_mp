@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import CaptureModal from "./CaptureModal";
+import { PersonFormData } from "@/app/add-person/page";
 
 interface AddPersonFormProps {
   onSubmit: (data: any) => void;
 }
 
 const AddPersonForm: React.FC<AddPersonFormProps> = ({ onSubmit }) => {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<PersonFormData>({
     name: "",
     nickname: "",
     age: "",
     police_station: "",
-    crime: "",
-    sections: "",
-    arrest_date: "",
-    arrest_time: "",
-    photo: "",
+    crime_and_section: "",
+    head_of_crime: "",
+    arrest_date_time: "",
+    img_url: "",
   });
   const [captureOpen, setCaptureOpen] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -25,7 +25,7 @@ const AddPersonForm: React.FC<AddPersonFormProps> = ({ onSubmit }) => {
       const reader = new FileReader();
       reader.onload = () => {
         if (typeof reader.result === "string") {
-          setForm({ ...form, photo: reader.result });
+          setForm({ ...form, img_url: reader.result });
         }
       };
       reader.readAsDataURL(file);
@@ -39,7 +39,7 @@ const AddPersonForm: React.FC<AddPersonFormProps> = ({ onSubmit }) => {
   };
 
   const handleCapture = (image: string) => {
-    setForm({ ...form, photo: image });
+    setForm({ ...form, img_url: image });
     setCaptureOpen(false);
   };
 
@@ -55,8 +55,8 @@ const AddPersonForm: React.FC<AddPersonFormProps> = ({ onSubmit }) => {
   <input name="nickname" value={form.nickname} onChange={handleChange} placeholder="Nickname" className="mb-2 px-3 py-2 rounded w-full bg-white/10 border border-blue-300/30 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" />
   <input name="age" value={form.age} onChange={handleChange} placeholder="Age" className="mb-2 px-3 py-2 rounded w-full bg-white/10 border border-blue-300/30 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" min="0" />
   <input name="police_station" value={form.police_station} onChange={handleChange} placeholder="Police Station" className="mb-2 px-3 py-2 rounded w-full bg-white/10 border border-blue-300/30 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-  <input name="crime" value={form.crime} onChange={handleChange} placeholder="Crime" className="mb-2 px-3 py-2 rounded w-full bg-white/10 border border-blue-300/30 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-  <input name="sections" value={form.sections} onChange={handleChange} placeholder="Sections" className="mb-2 px-3 py-2 rounded w-full bg-white/10 border border-blue-300/30 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+  <input name="head_of_crime" value={form.head_of_crime} onChange={handleChange} placeholder="Head of Crime" className="mb-2 px-3 py-2 rounded w-full bg-white/10 border border-blue-300/30 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+  <input name="crime_and_section" value={form.crime_and_section} onChange={handleChange} placeholder="Crime and Section" className="mb-2 px-3 py-2 rounded w-full bg-white/10 border border-blue-300/30 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" />
       <div className="flex gap-2 w-full mb-2">
         <button type="button" onClick={() => setCaptureOpen(true)} className="px-3 py-2 rounded bg-blue-600 text-white font-bold hover:bg-blue-800 transition w-full">Capture Photo</button>
         <label className="w-full">
@@ -76,9 +76,8 @@ const AddPersonForm: React.FC<AddPersonFormProps> = ({ onSubmit }) => {
           </span>
         </label>
       </div>
-  <input name="arrest_date" value={form.arrest_date} onChange={handleChange} placeholder="Arrest Date" className="mb-2 px-3 py-2 rounded w-full bg-white/10 border border-blue-300/30 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" type="date" />
-  <input name="arrest_time" value={form.arrest_time} onChange={handleChange} placeholder="Arrest Time" className="mb-2 px-3 py-2 rounded w-full bg-white/10 border border-blue-300/30 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" type="time" />
-      {form.photo && <img src={form.photo} alt="Captured" className="rounded-full w-24 h-24 object-cover border-2 border-blue-400 mb-2" />}
+  <input name="arrest_date_time" value={form.arrest_date_time} onChange={handleChange} placeholder="Arrest Date" className="mb-2 px-3 py-2 rounded w-full bg-white/10 border border-blue-300/30 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" type="date" />
+      {form.img_url && <img src={form.img_url} alt="Captured" className="rounded-full w-24 h-24 object-cover border-2 border-blue-400 mb-2" />}
       <button type="submit" className="px-4 py-2 rounded bg-gradient-to-r from-blue-500 to-blue-800 text-white font-bold hover:from-blue-700 hover:to-blue-900 transition w-full">Submit</button>
       <CaptureModal open={captureOpen} onClose={() => setCaptureOpen(false)} onCapture={handleCapture} cameraFacingMode="user" onSwitchCamera={() => {}} />
     </form>
